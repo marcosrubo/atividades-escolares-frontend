@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Disciplinas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+
+    <div class="acoes" style="margin-bottom: 10px;">
+      <a href="../index.html" class="btn btn-secundario">
+        ⬅ Voltar ao menu
+      </a>
+    </div>
+
+    <h1>Cadastro de Disciplinas</h1>
+
+    <div id="modo" class="modo modo-cadastro">
+      🟢 Modo Cadastro
+    </div>
+
+    <div class="card">
+      <div class="form-grid">
+        <div class="campo">
+          <label for="id">ID</label>
+          <input type="text" id="id" readonly>
+        </div>
+
+        <div class="campo">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome">
+          <small class="erro" id="erroNome"></small>
+        </div>
+
+        <div class="campo">
+          <label for="atualizacao">Atualização</label>
+          <input type="text" id="atualizacao" readonly>
+        </div>
+      </div>
+
+      <div class="acoes">
+        <button class="btn btn-secundario" onclick="limpar()">
+          🧹 Limpar
+        </button>
+
+        <button class="btn btn-sucesso" onclick="incluir()" id="btnCadastrar">
+          ➕ Cadastrar
+        </button>
+
+        <button class="btn btn-primario" onclick="salvar()" id="btnSalvar">
+          💾 Salvar
+        </button>
+
+        <button class="btn btn-perigo" onclick="excluir()" id="btnExcluir">
+          🗑 Excluir
+        </button>
+
+        <button class="btn btn-cancelar" onclick="cancelarEdicao()" id="btnCancelar">
+          ❌ Cancelar edição
+        </button>
+      </div>
+
+      <div class="status" id="status">Pronto.</div>
+    </div>
+
+    <div class="card">
+      <div class="barra-superior">
+        <div class="busca-box">
+          <label for="buscaNome">Buscar por nome</label>
+          <input
+            type="text"
+            id="buscaNome"
+            placeholder="Digite parte do nome..."
+            oninput="filtrarTabela()"
+          >
+        </div>
+
+        <div class="acoes-tabela">
+          <button class="btn btn-secundario" onclick="carregarDisciplinas()">
+            🔄 Atualizar
+          </button>
+
+          <button class="btn btn-secundario" onclick="exportarCSV()">
+            📄 Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="contador" id="contadorRegistros">0 registro(s)</div>
+
+      <div class="tabela-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 120px;">ID</th>
+              <th onclick="ordenarPor('nome')" class="ordenavel">
+                Nome <span id="icone-nome"></span>
+              </th>
+              <th style="width: 260px;">Atualização</th>
+            </tr>
+          </thead>
+          <tbody id="tabela"></tbody>
+        </table>
+      </div>
+
+      <div class="paginacao">
+        <div>
+          Itens por página:
+          <select id="itensPorPagina" onchange="alterarItensPorPagina()">
+            <option>5</option>
+            <option selected>10</option>
+            <option>20</option>
+            <option>50</option>
+          </select>
+        </div>
+
+        <div id="infoPaginacao">Página 1 de 1</div>
+
+        <div>
+          <button onclick="irParaPrimeiraPagina()">⏮</button>
+          <button onclick="irParaPaginaAnterior()">◀</button>
+          <button onclick="irParaProximaPagina()">▶</button>
+          <button onclick="irParaUltimaPagina()">⏭</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal">
+      <div id="modalTopo" class="modal-topo">Título</div>
+      <div id="modalMensagem" class="modal-corpo">Mensagem</div>
+      <div id="modalAcoes" class="modal-acoes"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
