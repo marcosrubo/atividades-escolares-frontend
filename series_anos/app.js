@@ -1,8 +1,13 @@
-const API_URL =
-  window.location.hostname === '127.0.0.1' ||
-  window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:3000/series_anos'
-    : 'https://pessoas-api.onrender.com/series_anos';
+// app.js de /series_anos
+
+const hostname = window.location.hostname;
+
+const API_BASE_URL =
+  hostname === '127.0.0.1' || hostname === 'localhost'
+    ? 'http://127.0.0.1:3000'
+    : 'https://atividades-escolares-backend.onrender.com';
+
+const API_URL = `${API_BASE_URL}/series_anos`;
 
 let seriesAnos = [];
 let idSelecionado = null;
@@ -576,5 +581,3 @@ window.addEventListener('load', async () => {
   atualizarModoInterface();
   await carregarSeriesAnos();
 });
-
-

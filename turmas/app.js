@@ -1,14 +1,14 @@
-const API_URL =
-  window.location.hostname === '127.0.0.1' ||
-  window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:3000/turmas'
-    : 'https://pessoas-api.onrender.com/turmas';
+// app.js de /turmas
 
-const API_SERIES_ANOS_URL =
-  window.location.hostname === '127.0.0.1' ||
-  window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:3000/series_anos'
-    : 'https://pessoas-api.onrender.com/series_anos';
+const hostname = window.location.hostname;
+
+const API_BASE_URL =
+  hostname === '127.0.0.1' || hostname === 'localhost'
+    ? 'http://127.0.0.1:3000'
+    : 'https://atividades-escolares-backend.onrender.com';
+
+const API_URL = `${API_BASE_URL}/turmas`;
+const API_SERIES_ANOS_URL = `${API_BASE_URL}/series_anos`;
 
 let turmas = [];
 let seriesAnos = [];
@@ -649,5 +649,3 @@ window.addEventListener('load', async () => {
   await carregarSeriesAnosParaCombo();
   await carregarTurmas();
 });
-
-

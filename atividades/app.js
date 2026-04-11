@@ -1,20 +1,15 @@
-const API_URL =
-  window.location.hostname === '127.0.0.1' ||
-  window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:3000/atividades'
-    : 'https://pessoas-api.onrender.com/atividades';
+// app.js de /atividades
 
-const API_DISCIPLINAS_URL =
-  window.location.hostname === '127.0.0.1' ||
-  window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:3000/disciplinas'
-    : 'https://pessoas-api.onrender.com/disciplinas';
+const hostname = window.location.hostname;
 
-const API_SERIES_ANOS_URL =
-  window.location.hostname === '127.0.0.1' ||
-  window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:3000/series_anos'
-    : 'https://pessoas-api.onrender.com/series_anos';
+const API_BASE_URL =
+  hostname === '127.0.0.1' || hostname === 'localhost'
+    ? 'http://127.0.0.1:3000'
+    : 'https://atividades-escolares-backend.onrender.com';
+
+const API_URL = `${API_BASE_URL}/atividades`;
+const API_DISCIPLINAS_URL = `${API_BASE_URL}/disciplinas`;
+const API_SERIES_ANOS_URL = `${API_BASE_URL}/series_anos`;
 
 let atividades = [];
 let disciplinas = [];
@@ -750,5 +745,3 @@ window.addEventListener('load', async () => {
   await carregarSeriesAnosParaCombo();
   await carregarAtividades();
 });
-
-

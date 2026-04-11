@@ -1,8 +1,13 @@
-const API_URL =
-  window.location.hostname === '127.0.0.1' ||
-  window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:3000/disciplinas'
-    : 'https://pessoas-api.onrender.com/disciplinas';
+// app.js de /disciplinas
+
+const hostname = window.location.hostname;
+
+const API_BASE_URL =
+  hostname === '127.0.0.1' || hostname === 'localhost'
+    ? 'http://127.0.0.1:3000'
+    : 'https://atividades-escolares-backend.onrender.com';
+
+const API_URL = `${API_BASE_URL}/disciplinas`;
 
 let disciplinas = [];
 let idSelecionado = null;
