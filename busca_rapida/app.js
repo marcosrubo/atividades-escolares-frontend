@@ -8,7 +8,9 @@ const API_BASE =
 const endpoints = {
   disciplinas: `${API_BASE}/disciplinas`,
   seriesAnos: `${API_BASE}/series_anos`,
-  atividades: `${API_BASE}/atividades`
+  turmas: `${API_BASE}/turmas`,
+  atividades: `${API_BASE}/atividades`,
+  utilizacoes: `${API_BASE}/utilizacoes`
 };
 
 const btnLimpar = document.getElementById("btnLimpar");
@@ -25,9 +27,19 @@ const badgeQuantidade = document.getElementById("badgeQuantidade");
 const textoErro = document.getElementById("textoErro");
 const textoCarregando = document.getElementById("textoCarregando");
 
+const modalImpressao = document.getElementById("modalImpressao");
+const modalTituloAtividade = document.getElementById("modalTituloAtividade");
+const selectTurmaModal = document.getElementById("selectTurmaModal");
+const btnFecharModal = document.getElementById("btnFecharModal");
+const btnCancelarModal = document.getElementById("btnCancelarModal");
+const btnConfirmarImpressao = document.getElementById("btnConfirmarImpressao");
+
 let atividadesCache = [];
 let disciplinasCache = [];
 let seriesAnosCache = [];
+let turmasCache = [];
+
+let atividadeSelecionadaParaImpressao = null;
 
 let filtrosAtuais = {
   serieAnoId: "",
@@ -298,6 +310,80 @@ function montarResumoBusca(total) {
     : `${total} atividades encontradas para ${partes.join(" • ")}.`;
 }
 
+function preencherTurmasModal() {
+  const valorAtual = selectTurmaModal.value;
+
+  selectTurmaModal.innerHTML = `
+    <option value="">Imprimir sem registrar utilização</option>
+  `;
+
+  const turmasOrdenadas = [...turmasCache].sort((a, b) => {
+    const nomeSerieA = normalizarTexto(a?.serie_ano?.nome);
+    const nomeSerieB = normalizarTexto(b?.serie_ano?.nome);
+
+    if (nomeSerieA !== nomeSerieB) {
+      return nomeSerieA.localeCompare(nomeSerieB, "pt-BR");
+    }
+
+    return normalizarTexto(a?.nome).localeCompare(normalizarTexto(b?.nome), "pt-BR");
+  });
+
+  turmasOrdenadas.forEach((turma) => {
+    const option = document.createElement("option");
+    option.value = String(turma.id);
+    option.textContent = turma.serie_ano?.nome
+      ? `${turma.serie_ano.nome} • ${turma.nome}`
+      : turma.nome;
+
+    selectTurmaModal.appendChild(option);
+  });
+
+  const aindaExiste = turmasOrdenadas.some((turma) => String(turma.id) === valorAtual);
+  selectTurmaModal.value = aindaExiste ? valorAtual : "";
+}
+
+function abrirModalImpressao(atividade) {
+  atividadeSelecionadaParaImpressao = atividade;
+  modalTituloAtividade.textContent = atividade.titulo || "Atividade";
+  selectTurmaModal.value = "";
+  modalImpressao.classList.remove("hidden");
+}
+
+function fecharModalImpressao() {
+  atividadeSelecionadaParaImpressao = null;
+  selectTurmaModal.value = "";
+  modalImpressao.classList.add("hidden");
+}
+
+async function registrarUtilizacaoSeNecessario(atividadeId, turmaId) {
+  if (!turmaId) return;
+
+  const hoje = new Date().toISOString().slice(0, 10);
+
+  const response = await fetch(endpoints.utilizacoes, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      atividade_id: Number(atividadeId),
+      turma_id: Number(turmaId),
+      data_utilizacao: hoje
+    })
+  });
+
+  if (!response.ok) {
+    let detalhe = "Erro ao registrar utilização.";
+    try {
+      const erro = await response.json();
+      detalhe = erro?.detalhe || erro?.erro || detalhe;
+    } catch {
+      // ignora
+    }
+    throw new Error(detalhe);
+  }
+}
+
 function criarCardResultado(atividade) {
   const article = document.createElement("article");
   article.className = "resultado-card";
@@ -343,17 +429,7 @@ function criarCardResultado(atividade) {
 
   btnImprimir.addEventListener("click", () => {
     if (!atividade.arquivo_pdf_url) return;
-
-    const janela = window.open(atividade.arquivo_pdf_url, "_blank");
-    if (!janela) return;
-
-    janela.addEventListener("load", () => {
-      try {
-        janela.print();
-      } catch (error) {
-        console.error("Erro ao abrir impressão:", error);
-      }
-    });
+    abrirModalImpressao(atividade);
   });
 
   return article;
@@ -398,21 +474,24 @@ function limparFiltros() {
 }
 
 async function carregarBase() {
-  mostrarCarregando("Carregando disciplinas, séries/anos e atividades...");
+  mostrarCarregando("Carregando disciplinas, séries/anos, turmas e atividades...");
 
   try {
-    const [disciplinas, seriesAnos, atividades] = await Promise.all([
+    const [disciplinas, seriesAnos, turmas, atividades] = await Promise.all([
       buscarJson(endpoints.disciplinas, "disciplinas"),
       buscarJson(endpoints.seriesAnos, "séries/anos"),
+      buscarJson(endpoints.turmas, "turmas"),
       buscarJson(endpoints.atividades, "atividades")
     ]);
 
     disciplinasCache = Array.isArray(disciplinas) ? disciplinas : [];
     seriesAnosCache = Array.isArray(seriesAnos) ? seriesAnos : [];
+    turmasCache = Array.isArray(turmas) ? turmas : [];
     atividadesCache = (Array.isArray(atividades) ? atividades : []).sort(compararAtividadePorTitulo);
 
     montarBotoesSeries();
     montarBotoesDisciplinas();
+    preencherTurmasModal();
     atualizarBotoesAtivos();
 
     esconderCarregando();
@@ -437,6 +516,56 @@ btnLimpar.addEventListener("click", limparFiltros);
 
 btnAtualizarBase.addEventListener("click", async () => {
   await carregarBase();
+});
+
+btnFecharModal.addEventListener("click", fecharModalImpressao);
+btnCancelarModal.addEventListener("click", fecharModalImpressao);
+
+modalImpressao.addEventListener("click", (event) => {
+  if (event.target === modalImpressao) {
+    fecharModalImpressao();
+  }
+});
+
+btnConfirmarImpressao.addEventListener("click", async () => {
+  if (!atividadeSelecionadaParaImpressao) return;
+
+  const turmaId = selectTurmaModal.value;
+  const pdfUrl = atividadeSelecionadaParaImpressao.arquivo_pdf_url;
+
+  const janela = window.open("", "_blank");
+
+  if (!janela) {
+    alert("O navegador bloqueou a abertura da janela de impressão.");
+    return;
+  }
+
+  try {
+    btnConfirmarImpressao.disabled = true;
+    btnConfirmarImpressao.textContent = "Processando...";
+
+    if (turmaId) {
+      await registrarUtilizacaoSeNecessario(atividadeSelecionadaParaImpressao.id, turmaId);
+    }
+
+    fecharModalImpressao();
+
+    janela.location.href = pdfUrl;
+
+    janela.addEventListener("load", () => {
+      try {
+        janela.print();
+      } catch (error) {
+        console.error("Erro ao abrir impressão:", error);
+      }
+    });
+  } catch (error) {
+    janela.close();
+    alert(error.message || "Erro ao processar impressão.");
+  } finally {
+    btnConfirmarImpressao.disabled = false;
+    btnConfirmarImpressao.textContent = "Imprimir";
+  }
 });
 
 carregarBase();

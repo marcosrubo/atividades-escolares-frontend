@@ -118,6 +118,37 @@
     <section id="listaResultados" class="resultados-grid hidden"></section>
   </div>
 
+  <div id="modalImpressao" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🖨️ Imprimir atividade</h3>
+        <button id="btnFecharModal" class="btn-fechar-modal" type="button">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-titulo" id="modalTituloAtividade">Atividade</p>
+        <p class="modal-subtitulo">
+          Se informar a turma, a utilização será registrada no histórico.
+          Se não informar, a atividade será apenas aberta para impressão.
+        </p>
+
+        <div class="campo-modal">
+          <label for="selectTurmaModal">Turma (opcional)</label>
+          <select id="selectTurmaModal">
+            <option value="">Imprimir sem registrar utilização</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btnCancelarModal" class="btn-secundario" type="button">Cancelar</button>
+        <button id="btnConfirmarImpressao" class="btn-modal-primario" type="button">
+          Imprimir
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="./app.js"></script>
 </body>
 </html>
