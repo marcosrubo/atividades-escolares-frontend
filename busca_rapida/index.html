@@ -13,17 +13,18 @@
         <div class="hero-tag">Sistema educacional • Atendimento emergencial</div>
         <h1>Busca Rápida</h1>
         <p>
-          Localize rapidamente uma atividade pronta para impressão em situações
-          urgentes, como turmas sem professor, sem abrir mão do filtro por série/ano.
+          Localize rapidamente uma atividade adequada para a turma, com foco em
+          série/ano e disciplina, para situações urgentes do dia a dia escolar.
         </p>
       </div>
     </section>
 
     <div class="topbar">
       <div>
-        <h2>Localização rápida de atividades</h2>
+        <h2>Painel rápido de localização</h2>
         <p>
-          Escolha a série/ano primeiro e refine a busca apenas se necessário.
+          Primeiro escolha a série/ano. Depois refine pela disciplina. Os resultados
+          aparecem automaticamente abaixo.
         </p>
       </div>
 
@@ -36,80 +37,50 @@
     <section class="alerta-box">
       <div class="alerta-icone">⚡</div>
       <div>
-        <h3>Uso pensado para momentos de urgência</h3>
+        <h3>Busca pensada para momentos de urgência</h3>
         <p>
-          Esta tela foi planejada para o pedagogo agir rapidamente quando houver
-          necessidade de localizar, abrir e imprimir uma atividade adequada ao nível
-          da turma.
+          Esta tela foi desenhada para permitir que a equipe pedagógica encontre
+          rapidamente uma atividade adequada ao nível da turma, com o menor número
+          possível de passos.
         </p>
       </div>
     </section>
 
-    <section class="series-box">
-      <div class="series-header">
-        <div>
-          <h3>1. Escolha rapidamente a série/ano</h3>
-          <p>
-            Este é o filtro principal da busca rápida. Ao clicar em uma série, a busca é aplicada imediatamente.
-          </p>
-        </div>
-      </div>
-
-      <div id="botoesSeries" class="series-grid">
-        <button type="button" class="btn-serie" data-id="">Todas as séries</button>
-      </div>
-    </section>
-
-    <section class="filtros-card">
-      <div class="filtros-header">
-        <div>
-          <h3>2. Refine a busca, se necessário</h3>
-          <p>
-            Disciplina e palavra-chave são opcionais e servem para afunilar ainda mais os resultados.
-          </p>
+    <section class="filtros-rapidos-card">
+      <div class="bloco-filtro">
+        <div class="bloco-filtro-header">
+          <h3>1. Escolha a Série / Ano</h3>
+          <p>Este é o filtro principal da busca rápida.</p>
         </div>
 
-        <div class="filtros-acoes-topo">
-          <button id="btnAtualizarBase" class="btn-secundario" type="button">
-            Atualizar base
-          </button>
-          <button id="btnLimpar" class="btn-secundario" type="button">
-            Limpar filtros
+        <div id="botoesSeries" class="botoes-grid">
+          <button type="button" class="btn-filtro ativo" data-tipo="serie" data-id="">
+            Todas as séries
           </button>
         </div>
       </div>
 
-      <form id="formBusca" class="filtros-grid">
-        <div class="campo">
-          <label for="serieAno">Série / Ano</label>
-          <select id="serieAno" name="serieAno">
-            <option value="">Todos</option>
-          </select>
+      <div class="bloco-filtro">
+        <div class="bloco-filtro-header">
+          <h3>2. Escolha a Disciplina</h3>
+          <p>Opcional para refinar ainda mais os resultados.</p>
         </div>
 
-        <div class="campo">
-          <label for="disciplina">Disciplina</label>
-          <select id="disciplina" name="disciplina">
-            <option value="">Todas</option>
-          </select>
-        </div>
-
-        <div class="campo campo-chave">
-          <label for="palavraChave">Palavra-chave</label>
-          <input
-            type="text"
-            id="palavraChave"
-            name="palavraChave"
-            placeholder="Ex.: leitura, interpretação, fração..."
-          />
-        </div>
-
-        <div class="acoes-busca">
-          <button id="btnBuscar" class="btn-primario" type="submit">
-            🔎 Buscar atividades
+        <div id="botoesDisciplinas" class="botoes-grid">
+          <button type="button" class="btn-filtro ativo" data-tipo="disciplina" data-id="">
+            Todas as disciplinas
           </button>
         </div>
-      </form>
+      </div>
+
+      <div class="acoes-topo">
+        <button id="btnLimpar" class="btn-secundario" type="button">
+          Limpar filtros
+        </button>
+        <button id="btnAtualizarBase" class="btn-secundario" type="button">
+          Atualizar base
+        </button>
+      </div>
     </section>
 
     <section class="painel-status">
