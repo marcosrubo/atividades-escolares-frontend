@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -23,6 +20,11 @@
       --primary-soft: #eff6ff;
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
       --radius: 18px;
+
+      --quick: #16a34a;
+      --quick-soft: #f0fdf4;
+      --quick-border: #86efac;
+      --quick-text: #166534;
     }
 
     body {
@@ -144,6 +146,43 @@
       opacity: 0.96;
     }
 
+    .alerta-rapido {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 22px;
+      background: #fffbea;
+      border: 1px solid #fde68a;
+      border-radius: 18px;
+      padding: 18px 20px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .alerta-icone {
+      flex-shrink: 0;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fef3c7;
+      font-size: 24px;
+    }
+
+    .alerta-rapido h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      color: #92400e;
+    }
+
+    .alerta-rapido p {
+      margin: 0;
+      color: #78350f;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -176,6 +215,33 @@
       border-color: #c7d2fe;
     }
 
+    .card-rapido {
+      border: 2px solid var(--quick-border);
+      background: linear-gradient(135deg, #f0fdf4, #ffffff);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-rapido::after {
+      content: "PRIORIDADE";
+      position: absolute;
+      top: 14px;
+      right: -30px;
+      transform: rotate(35deg);
+      background: var(--quick);
+      color: #fff;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 0.8px;
+      padding: 6px 36px;
+      box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
+    }
+
+    .card-rapido:hover {
+      border-color: #22c55e;
+      box-shadow: 0 16px 34px rgba(22, 163, 74, 0.14);
+    }
+
     .icone {
       width: 58px;
       height: 58px;
@@ -186,6 +252,11 @@
       font-size: 28px;
       margin-bottom: 18px;
       background: var(--primary-soft);
+    }
+
+    .icone-rapido {
+      background: #dcfce7;
+      color: var(--quick-text);
     }
 
     .card h3 {
@@ -201,6 +272,10 @@
       line-height: 1.6;
     }
 
+    .card-rapido p {
+      color: #166534;
+    }
+
     .card-footer {
       margin-top: 18px;
       display: flex;
@@ -209,6 +284,10 @@
       color: var(--primary);
       font-weight: bold;
       font-size: 14px;
+    }
+
+    .card-rapido .card-footer {
+      color: var(--quick-text);
     }
 
     .seta {
@@ -263,6 +342,10 @@
       .card {
         min-height: auto;
       }
+
+      .alerta-rapido {
+        padding: 16px;
+      }
     }
   </style>
 </head>
@@ -291,7 +374,36 @@
       </a>
     </div>
 
+    <section class="alerta-rapido">
+      <div class="alerta-icone">⚠️</div>
+      <div>
+        <h3>Atendimento rápido para situações emergenciais</h3>
+        <p>
+          Quando houver turma sem professor, utilize a opção <strong>Busca Rápida</strong>
+          para localizar e imprimir uma atividade com agilidade, reduzindo o tempo de resposta
+          da equipe pedagógica.
+        </p>
+      </div>
+    </section>
+
     <section class="grid">
+      <a class="card-link" href="./busca_rapida/index.html">
+        <article class="card card-rapido">
+          <div>
+            <div class="icone icone-rapido">⚡</div>
+            <h3>Busca Rápida</h3>
+            <p>
+              Encontre rapidamente uma atividade pronta para impressão, com foco em
+              agilidade para atendimento de turmas sem professor.
+            </p>
+          </div>
+          <div class="card-footer">
+            <span>Buscar atividade agora</span>
+            <span class="seta">→</span>
+          </div>
+        </article>
+      </a>
+
       <a class="card-link" href="./disciplinas/index.html">
         <article class="card">
           <div>
@@ -349,8 +461,8 @@
             <div class="icone">📄</div>
             <h3>Atividades</h3>
             <p>
-              Cadastro das atividades pedagógicas com associação entre disciplina
-              e série/ano, incluindo o futuro vínculo com arquivos PDF.
+              Cadastro das atividades pedagógicas com associação entre disciplina,
+              série/ano e arquivo PDF para impressão e uso em sala.
             </p>
           </div>
           <div class="card-footer">
@@ -381,8 +493,9 @@
     <section class="info-box">
       <h3>Observação</h3>
       <p>
-        Este módulo foi organizado de forma separada por cadastro para facilitar manutenção,
-        aprendizado, evolução do sistema e reaproveitamento da estrutura nos próximos projetos.
+        Este módulo foi organizado de forma separada por cadastro e rotina para facilitar
+        manutenção, aprendizado, evolução do sistema e reaproveitamento da estrutura
+        nos próximos projetos.
       </p>
     </section>
   </div>

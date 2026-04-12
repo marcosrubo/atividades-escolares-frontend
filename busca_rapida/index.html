@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Busca Rápida - Atividades Escolares</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-conteudo">
+        <div class="hero-tag">Sistema educacional • Atendimento emergencial</div>
+        <h1>Busca Rápida</h1>
+        <p>
+          Encontre rapidamente uma atividade pronta para impressão em situações
+          urgentes, como turmas sem professor.
+        </p>
+      </div>
+    </section>
+
+    <div class="topbar">
+      <div>
+        <h2>Localização rápida de atividades</h2>
+        <p>Escolha os filtros abaixo e encontre uma atividade em poucos segundos.</p>
+      </div>
+
+      <a class="btn-voltar" href="../index.html">
+        <span>⬅</span>
+        <span>Voltar ao menu do módulo</span>
+      </a>
+    </div>
+
+    <section class="alerta-box">
+      <div class="alerta-icone">⚡</div>
+      <div>
+        <h3>Uso pensado para momentos de urgência</h3>
+        <p>
+          Esta tela foi planejada para o pedagogo agir rapidamente quando houver
+          necessidade de localizar, abrir e imprimir uma atividade para a turma.
+        </p>
+      </div>
+    </section>
+
+    <section class="filtros-card">
+      <div class="filtros-header">
+        <div>
+          <h3>Filtros de busca</h3>
+          <p>Use apenas o necessário para localizar a atividade com agilidade.</p>
+        </div>
+
+        <div class="filtros-acoes-topo">
+          <button id="btnAtualizarBase" class="btn-secundario" type="button">
+            Atualizar base
+          </button>
+          <button id="btnLimpar" class="btn-secundario" type="button">
+            Limpar filtros
+          </button>
+        </div>
+      </div>
+
+      <form id="formBusca" class="filtros-grid">
+        <div class="campo">
+          <label for="serieAno">Série / Ano</label>
+          <select id="serieAno" name="serieAno">
+            <option value="">Todos</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="disciplina">Disciplina</label>
+          <select id="disciplina" name="disciplina">
+            <option value="">Todas</option>
+          </select>
+        </div>
+
+        <div class="campo campo-chave">
+          <label for="palavraChave">Palavra-chave</label>
+          <input
+            type="text"
+            id="palavraChave"
+            name="palavraChave"
+            placeholder="Ex.: leitura, interpretação, fração..."
+          />
+        </div>
+
+        <div class="acoes-busca">
+          <button id="btnBuscar" class="btn-primario" type="submit">
+            🔎 Buscar atividades
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="painel-status">
+      <div class="status-esquerda">
+        <h3>Resultados da busca</h3>
+        <p id="textoResumo">Carregando dados do sistema...</p>
+      </div>
+
+      <div class="status-direita">
+        <span id="badgeQuantidade" class="badge-quantidade">0 atividades</span>
+      </div>
+    </section>
+
+    <section id="areaCarregando" class="carregando">
+      <div class="spinner"></div>
+      <p id="textoCarregando">Carregando atividades...</p>
+    </section>
+
+    <section id="areaErro" class="erro-box hidden">
+      <div class="erro-icone">⚠️</div>
+      <div>
+        <h3>Não foi possível carregar a busca rápida</h3>
+        <p id="textoErro">
+          Verifique se o backend está no ar e se a URL da API está correta.
+        </p>
+      </div>
+    </section>
+
+    <section id="areaVazia" class="estado-vazio hidden">
+      <div class="estado-vazio-icone">📄</div>
+      <h3>Nenhuma atividade encontrada</h3>
+      <p>Tente alterar os filtros para ampliar a busca.</p>
+    </section>
+
+    <section id="listaResultados" class="resultados-grid hidden"></section>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
+
