@@ -115,8 +115,49 @@ async function buscarJson(url, nomeRecurso) {
   return response.json();
 }
 
+function obterSerieIdsDisponiveis() {
+  const ids = new Set();
+
+  atividadesCache.forEach((atividade) => {
+    if (atividade.serie_ano_id !== null && atividade.serie_ano_id !== undefined) {
+      ids.add(String(atividade.serie_ano_id));
+    }
+  });
+
+  return ids;
+}
+
+function obterDisciplinaIdsDisponiveis(serieAnoId = "") {
+  const ids = new Set();
+
+  atividadesCache.forEach((atividade) => {
+    const pertenceSerie =
+      !serieAnoId || String(atividade.serie_ano_id) === String(serieAnoId);
+
+    if (!pertenceSerie) return;
+
+    if (atividade.disciplina_id !== null && atividade.disciplina_id !== undefined) {
+      ids.add(String(atividade.disciplina_id));
+    }
+  });
+
+  return ids;
+}
+
+function garantirDisciplinaValida() {
+  const disciplinasDisponiveis = obterDisciplinaIdsDisponiveis(filtrosAtuais.serieAnoId);
+
+  if (!filtrosAtuais.disciplinaId) return;
+
+  if (!disciplinasDisponiveis.has(String(filtrosAtuais.disciplinaId))) {
+    filtrosAtuais.disciplinaId = "";
+  }
+}
+
 function montarBotoesSeries() {
   botoesSeriesContainer.innerHTML = "";
+
+  const serieIdsDisponiveis = obterSerieIdsDisponiveis();
 
   const btnTodos = document.createElement("button");
   btnTodos.type = "button";
@@ -126,12 +167,18 @@ function montarBotoesSeries() {
   btnTodos.textContent = "Todas as séries";
   btnTodos.addEventListener("click", () => {
     filtrosAtuais.serieAnoId = "";
+    garantirDisciplinaValida();
+    montarBotoesDisciplinas();
     atualizarBotoesAtivos();
     executarBuscaAtual();
   });
   botoesSeriesContainer.appendChild(btnTodos);
 
-  seriesAnosCache.forEach((serie) => {
+  const seriesDisponiveis = seriesAnosCache
+    .filter((serie) => serieIdsDisponiveis.has(String(serie.id)))
+    .sort((a, b) => compararPorNome(a, b, "nome"));
+
+  seriesDisponiveis.forEach((serie) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = `btn-filtro ${String(filtrosAtuais.serieAnoId) === String(serie.id) ? "ativo" : ""}`;
@@ -141,6 +188,8 @@ function montarBotoesSeries() {
 
     btn.addEventListener("click", () => {
       filtrosAtuais.serieAnoId = String(serie.id);
+      garantirDisciplinaValida();
+      montarBotoesDisciplinas();
       atualizarBotoesAtivos();
       executarBuscaAtual();
     });
@@ -151,6 +200,8 @@ function montarBotoesSeries() {
 
 function montarBotoesDisciplinas() {
   botoesDisciplinasContainer.innerHTML = "";
+
+  const disciplinaIdsDisponiveis = obterDisciplinaIdsDisponiveis(filtrosAtuais.serieAnoId);
 
   const btnTodas = document.createElement("button");
   btnTodas.type = "button";
@@ -165,7 +216,11 @@ function montarBotoesDisciplinas() {
   });
   botoesDisciplinasContainer.appendChild(btnTodas);
 
-  disciplinasCache.forEach((disciplina) => {
+  const disciplinasDisponiveis = disciplinasCache
+    .filter((disciplina) => disciplinaIdsDisponiveis.has(String(disciplina.id)))
+    .sort((a, b) => compararPorNome(a, b, "nome"));
+
+  disciplinasDisponiveis.forEach((disciplina) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = `btn-filtro ${String(filtrosAtuais.disciplinaId) === String(disciplina.id) ? "ativo" : ""}`;
@@ -336,6 +391,8 @@ function limparFiltros() {
     disciplinaId: ""
   };
 
+  montarBotoesSeries();
+  montarBotoesDisciplinas();
   atualizarBotoesAtivos();
   renderizarResultados([...atividadesCache].sort(compararAtividadePorTitulo));
 }
@@ -350,18 +407,13 @@ async function carregarBase() {
       buscarJson(endpoints.atividades, "atividades")
     ]);
 
-    disciplinasCache = (Array.isArray(disciplinas) ? disciplinas : []).sort((a, b) =>
-      compararPorNome(a, b, "nome")
-    );
-
-    seriesAnosCache = (Array.isArray(seriesAnos) ? seriesAnos : []).sort((a, b) =>
-      compararPorNome(a, b, "nome")
-    );
-
+    disciplinasCache = Array.isArray(disciplinas) ? disciplinas : [];
+    seriesAnosCache = Array.isArray(seriesAnos) ? seriesAnos : [];
     atividadesCache = (Array.isArray(atividades) ? atividades : []).sort(compararAtividadePorTitulo);
 
     montarBotoesSeries();
     montarBotoesDisciplinas();
+    atualizarBotoesAtivos();
 
     esconderCarregando();
     areaErro.classList.add("hidden");
