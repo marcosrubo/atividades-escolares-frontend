@@ -1,7 +1,7 @@
 const API_BASE =
   window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://localhost:3000"
-    : "https://SEU-BACKEND-NO-RENDER.onrender.com";
+    : "https://atividades-escolares-backend.onrender.com";
 
 const endpoints = {
   disciplinas: `${API_BASE}/disciplinas`,
@@ -151,7 +151,7 @@ async function carregarBase() {
   } catch (error) {
     esconderCarregando();
     mostrarErro(
-      `${error.message} Verifique se o backend está rodando e ajuste a constante API_BASE no app.js.`
+      `${error.message} Verifique se o backend está rodando e se a URL está correta.`
     );
     textoResumo.textContent = "Falha ao carregar os dados do sistema.";
   }
@@ -175,81 +175,33 @@ function filtrarAtividades(filtros) {
     const descricao = normalizarTexto(atividade.descricao);
     const disciplinaNome = normalizarTexto(atividade.disciplina?.nome);
     const serieAnoNome = normalizarTexto(atividade.serie_ano?.nome);
-    const idTexto = normalizarTexto(atividade.id);
 
     const matchPalavra =
       titulo.includes(palavra) ||
       descricao.includes(palavra) ||
       disciplinaNome.includes(palavra) ||
-      serieAnoNome.includes(palavra) ||
-      idTexto.includes(palavra);
+      serieAnoNome.includes(palavra);
 
     return matchDisciplina && matchSerieAno && matchPalavra;
   });
-}
-
-function montarResumoBusca(filtros, total) {
-  const partes = [];
-
-  if (filtros.disciplinaId) {
-    const disciplina = disciplinasCache.find(
-      (item) => String(item.id) === String(filtros.disciplinaId)
-    );
-    if (disciplina) partes.push(`disciplina: ${disciplina.nome}`);
-  }
-
-  if (filtros.serieAnoId) {
-    const serieAno = seriesAnosCache.find(
-      (item) => String(item.id) === String(filtros.serieAnoId)
-    );
-    if (serieAno) partes.push(`série/ano: ${serieAno.nome}`);
-  }
-
-  if (filtros.palavraChave.trim()) {
-    partes.push(`palavra-chave: "${filtros.palavraChave.trim()}"`);
-  }
-
-  if (partes.length === 0) {
-    return total === 1
-      ? "1 atividade exibida sem filtros específicos."
-      : `${total} atividades exibidas sem filtros específicos.`;
-  }
-
-  return total === 1
-    ? `1 atividade encontrada para ${partes.join(" • ")}.`
-    : `${total} atividades encontradas para ${partes.join(" • ")}.`;
 }
 
 function criarCardResultado(atividade) {
   const article = document.createElement("article");
   article.className = "resultado-card";
 
-  const descricao = atividade.descricao?.trim()
-    ? atividade.descricao.trim()
-    : "Sem descrição cadastrada.";
-
   const pdfDisponivel = Boolean(atividade.arquivo_pdf_url);
 
   article.innerHTML = `
-    <div class="resultado-topo">
-      <div>
-        <h3 class="resultado-titulo">${atividade.titulo || "Atividade sem título"}</h3>
-        <span class="resultado-id">ID ${atividade.id}</span>
-      </div>
-    </div>
-
-    <div class="resultado-tags">
-      <span class="tag">📚 ${atividade.disciplina?.nome || "Sem disciplina"}</span>
-      <span class="tag">🏫 ${atividade.serie_ano?.nome || "Sem série/ano"}</span>
-    </div>
-
-    <p class="resultado-descricao">${descricao}</p>
+    <h3>${atividade.titulo || "Sem título"}</h3>
+    <p>${atividade.descricao || ""}</p>
+    <p><b>${atividade.disciplina?.nome}</b> • ${atividade.serie_ano?.nome}</p>
 
     <div class="resultado-acoes">
-      <button class="btn-acao btn-visualizar" type="button" ${pdfDisponivel ? "" : "disabled"}>
-        📄 Visualizar PDF
+      <button class="btn-acao btn-visualizar" ${pdfDisponivel ? "" : "disabled"}>
+        📄 Visualizar
       </button>
-      <button class="btn-acao btn-imprimir" type="button" ${pdfDisponivel ? "" : "disabled"}>
+      <button class="btn-acao btn-imprimir" ${pdfDisponivel ? "" : "disabled"}>
         🖨️ Imprimir
       </button>
     </div>
@@ -258,44 +210,32 @@ function criarCardResultado(atividade) {
   const btnVisualizar = article.querySelector(".btn-visualizar");
   const btnImprimir = article.querySelector(".btn-imprimir");
 
-  btnVisualizar.addEventListener("click", () => {
-    if (!atividade.arquivo_pdf_url) return;
-    window.open(atividade.arquivo_pdf_url, "_blank");
-  });
+  btnVisualizar.onclick = () => {
+    if (atividade.arquivo_pdf_url) {
+      window.open(atividade.arquivo_pdf_url, "_blank");
+    }
+  };
 
-  btnImprimir.addEventListener("click", () => {
+  btnImprimir.onclick = () => {
     if (!atividade.arquivo_pdf_url) return;
 
     const janela = window.open(atividade.arquivo_pdf_url, "_blank");
-    if (!janela) return;
-
-    janela.addEventListener("load", () => {
-      try {
-        janela.print();
-      } catch (error) {
-        console.error("Erro ao abrir impressão:", error);
-      }
-    });
-  });
+    janela.onload = () => janela.print();
+  };
 
   return article;
 }
 
-function renderizarResultados(resultados, filtros, atualizarResumo = true) {
+function renderizarResultados(resultados, filtros = {}, atualizarResumo = true) {
   listaResultados.innerHTML = "";
-  areaErro.classList.add("hidden");
-  areaVazia.classList.add("hidden");
-
   atualizarQuantidade(resultados.length);
 
-  if (atualizarResumo) {
-    textoResumo.textContent = montarResumoBusca(filtros, resultados.length);
-  }
-
   if (!resultados.length) {
-    mostrarVazio("Nenhuma atividade corresponde aos filtros informados.");
+    mostrarVazio("Nenhuma atividade encontrada.");
     return;
   }
+
+  areaVazia.classList.add("hidden");
 
   resultados.forEach((atividade) => {
     listaResultados.appendChild(criarCardResultado(atividade));
@@ -314,21 +254,15 @@ formBusca.addEventListener("submit", (event) => {
   };
 
   const resultados = filtrarAtividades(filtros);
-  renderizarResultados(resultados, filtros, true);
+  renderizarResultados(resultados, filtros);
 });
 
 btnLimpar.addEventListener("click", () => {
   formBusca.reset();
-  renderizarResultados(atividadesCache, {
-    disciplinaId: "",
-    serieAnoId: "",
-    palavraChave: ""
-  }, true);
+  renderizarResultados(atividadesCache);
 });
 
-btnAtualizarBase.addEventListener("click", async () => {
-  await carregarBase();
-});
+btnAtualizarBase.addEventListener("click", carregarBase);
 
 carregarBase();
 
