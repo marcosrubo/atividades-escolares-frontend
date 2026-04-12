@@ -1,6 +1,8 @@
+const hostname = window.location.hostname;
+
 const API_BASE =
-  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-    ? "http://localhost:3000"
+  hostname === "127.0.0.1" || hostname === "localhost"
+    ? "http://127.0.0.1:3000"
     : "https://atividades-escolares-backend.onrender.com";
 
 const endpoints = {
@@ -15,6 +17,7 @@ const disciplinaEl = document.getElementById("disciplina");
 const palavraChaveEl = document.getElementById("palavraChave");
 const btnLimpar = document.getElementById("btnLimpar");
 const btnAtualizarBase = document.getElementById("btnAtualizarBase");
+const botoesSeriesContainer = document.getElementById("botoesSeries");
 
 const areaCarregando = document.getElementById("areaCarregando");
 const areaErro = document.getElementById("areaErro");
@@ -28,6 +31,7 @@ const textoCarregando = document.getElementById("textoCarregando");
 let atividadesCache = [];
 let disciplinasCache = [];
 let seriesAnosCache = [];
+let serieRapidaSelecionada = "";
 
 function mostrarCarregando(mensagem = "Carregando atividades...") {
   textoCarregando.textContent = mensagem;
@@ -91,6 +95,56 @@ function preencherSelect(selectEl, lista, textoPadrao) {
   selectEl.value = aindaExiste ? valorAtual : "";
 }
 
+function montarBotoesSeries() {
+  botoesSeriesContainer.innerHTML = "";
+
+  const botaoTodos = document.createElement("button");
+  botaoTodos.type = "button";
+  botaoTodos.className = "btn-serie";
+  botaoTodos.dataset.id = "";
+  botaoTodos.textContent = "Todas as séries";
+  if (!serieRapidaSelecionada) {
+    botaoTodos.classList.add("ativo");
+  }
+  botaoTodos.addEventListener("click", () => {
+    serieRapidaSelecionada = "";
+    serieAnoEl.value = "";
+    atualizarBotoesSerieAtivos();
+    executarBuscaAtual();
+  });
+  botoesSeriesContainer.appendChild(botaoTodos);
+
+  seriesAnosCache.forEach((serie) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn-serie";
+    btn.dataset.id = String(serie.id);
+    btn.textContent = serie.nome;
+
+    if (String(serie.id) === String(serieRapidaSelecionada)) {
+      btn.classList.add("ativo");
+    }
+
+    btn.addEventListener("click", () => {
+      serieRapidaSelecionada = String(serie.id);
+      serieAnoEl.value = String(serie.id);
+      atualizarBotoesSerieAtivos();
+      executarBuscaAtual();
+    });
+
+    botoesSeriesContainer.appendChild(btn);
+  });
+}
+
+function atualizarBotoesSerieAtivos() {
+  const botoes = botoesSeriesContainer.querySelectorAll(".btn-serie");
+
+  botoes.forEach((btn) => {
+    const id = btn.dataset.id || "";
+    btn.classList.toggle("ativo", String(id) === String(serieRapidaSelecionada));
+  });
+}
+
 async function buscarJson(url, nomeRecurso) {
   const response = await fetch(url);
 
@@ -130,21 +184,26 @@ async function carregarBase() {
 
     preencherSelect(disciplinaEl, disciplinasCache, "Todas");
     preencherSelect(serieAnoEl, seriesAnosCache, "Todos");
+    montarBotoesSeries();
 
     esconderCarregando();
     areaErro.classList.add("hidden");
 
     textoResumo.textContent =
       atividadesCache.length > 0
-        ? `Base carregada com ${atividadesCache.length} atividades. Use os filtros para refinar a busca.`
+        ? `Base carregada com ${atividadesCache.length} atividades. Escolha a série/ano para agilizar a busca.`
         : "A base foi carregada, mas ainda não há atividades cadastradas.";
 
     if (atividadesCache.length > 0) {
-      renderizarResultados(atividadesCache, {
-        disciplinaId: "",
-        serieAnoId: "",
-        palavraChave: ""
-      }, false);
+      renderizarResultados(
+        atividadesCache,
+        {
+          disciplinaId: "",
+          serieAnoId: "",
+          palavraChave: ""
+        },
+        false
+      );
     } else {
       mostrarVazio("Ainda não há atividades cadastradas no sistema.");
     }
@@ -175,33 +234,81 @@ function filtrarAtividades(filtros) {
     const descricao = normalizarTexto(atividade.descricao);
     const disciplinaNome = normalizarTexto(atividade.disciplina?.nome);
     const serieAnoNome = normalizarTexto(atividade.serie_ano?.nome);
+    const idTexto = normalizarTexto(atividade.id);
 
     const matchPalavra =
       titulo.includes(palavra) ||
       descricao.includes(palavra) ||
       disciplinaNome.includes(palavra) ||
-      serieAnoNome.includes(palavra);
+      serieAnoNome.includes(palavra) ||
+      idTexto.includes(palavra);
 
     return matchDisciplina && matchSerieAno && matchPalavra;
   });
+}
+
+function montarResumoBusca(filtros, total) {
+  const partes = [];
+
+  if (filtros.serieAnoId) {
+    const serieAno = seriesAnosCache.find(
+      (item) => String(item.id) === String(filtros.serieAnoId)
+    );
+    if (serieAno) partes.push(`série/ano: ${serieAno.nome}`);
+  }
+
+  if (filtros.disciplinaId) {
+    const disciplina = disciplinasCache.find(
+      (item) => String(item.id) === String(filtros.disciplinaId)
+    );
+    if (disciplina) partes.push(`disciplina: ${disciplina.nome}`);
+  }
+
+  if (filtros.palavraChave.trim()) {
+    partes.push(`palavra-chave: "${filtros.palavraChave.trim()}"`);
+  }
+
+  if (partes.length === 0) {
+    return total === 1
+      ? "1 atividade exibida sem filtros específicos."
+      : `${total} atividades exibidas sem filtros específicos.`;
+  }
+
+  return total === 1
+    ? `1 atividade encontrada para ${partes.join(" • ")}.`
+    : `${total} atividades encontradas para ${partes.join(" • ")}.`;
 }
 
 function criarCardResultado(atividade) {
   const article = document.createElement("article");
   article.className = "resultado-card";
 
+  const descricao = atividade.descricao?.trim()
+    ? atividade.descricao.trim()
+    : "Sem descrição cadastrada.";
+
   const pdfDisponivel = Boolean(atividade.arquivo_pdf_url);
 
   article.innerHTML = `
-    <h3>${atividade.titulo || "Sem título"}</h3>
-    <p>${atividade.descricao || ""}</p>
-    <p><b>${atividade.disciplina?.nome}</b> • ${atividade.serie_ano?.nome}</p>
+    <div class="resultado-topo">
+      <div>
+        <h3 class="resultado-titulo">${atividade.titulo || "Atividade sem título"}</h3>
+        <span class="resultado-id">ID ${atividade.id}</span>
+      </div>
+    </div>
+
+    <div class="resultado-tags">
+      <span class="tag">📚 ${atividade.disciplina?.nome || "Sem disciplina"}</span>
+      <span class="tag">🏫 ${atividade.serie_ano?.nome || "Sem série/ano"}</span>
+    </div>
+
+    <p class="resultado-descricao">${descricao}</p>
 
     <div class="resultado-acoes">
-      <button class="btn-acao btn-visualizar" ${pdfDisponivel ? "" : "disabled"}>
-        📄 Visualizar
+      <button class="btn-acao btn-visualizar" type="button" ${pdfDisponivel ? "" : "disabled"}>
+        📄 Visualizar PDF
       </button>
-      <button class="btn-acao btn-imprimir" ${pdfDisponivel ? "" : "disabled"}>
+      <button class="btn-acao btn-imprimir" type="button" ${pdfDisponivel ? "" : "disabled"}>
         🖨️ Imprimir
       </button>
     </div>
@@ -210,32 +317,44 @@ function criarCardResultado(atividade) {
   const btnVisualizar = article.querySelector(".btn-visualizar");
   const btnImprimir = article.querySelector(".btn-imprimir");
 
-  btnVisualizar.onclick = () => {
-    if (atividade.arquivo_pdf_url) {
-      window.open(atividade.arquivo_pdf_url, "_blank");
-    }
-  };
+  btnVisualizar.addEventListener("click", () => {
+    if (!atividade.arquivo_pdf_url) return;
+    window.open(atividade.arquivo_pdf_url, "_blank");
+  });
 
-  btnImprimir.onclick = () => {
+  btnImprimir.addEventListener("click", () => {
     if (!atividade.arquivo_pdf_url) return;
 
     const janela = window.open(atividade.arquivo_pdf_url, "_blank");
-    janela.onload = () => janela.print();
-  };
+    if (!janela) return;
+
+    janela.addEventListener("load", () => {
+      try {
+        janela.print();
+      } catch (error) {
+        console.error("Erro ao abrir impressão:", error);
+      }
+    });
+  });
 
   return article;
 }
 
-function renderizarResultados(resultados, filtros = {}, atualizarResumo = true) {
+function renderizarResultados(resultados, filtros, atualizarResumo = true) {
   listaResultados.innerHTML = "";
+  areaErro.classList.add("hidden");
+  areaVazia.classList.add("hidden");
+
   atualizarQuantidade(resultados.length);
 
-  if (!resultados.length) {
-    mostrarVazio("Nenhuma atividade encontrada.");
-    return;
+  if (atualizarResumo) {
+    textoResumo.textContent = montarResumoBusca(filtros, resultados.length);
   }
 
-  areaVazia.classList.add("hidden");
+  if (!resultados.length) {
+    mostrarVazio("Nenhuma atividade corresponde aos filtros informados.");
+    return;
+  }
 
   resultados.forEach((atividade) => {
     listaResultados.appendChild(criarCardResultado(atividade));
@@ -244,25 +363,51 @@ function renderizarResultados(resultados, filtros = {}, atualizarResumo = true) 
   listaResultados.classList.remove("hidden");
 }
 
-formBusca.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const filtros = {
+function obterFiltrosAtuais() {
+  return {
     disciplinaId: disciplinaEl.value,
     serieAnoId: serieAnoEl.value,
     palavraChave: palavraChaveEl.value
   };
+}
 
+function executarBuscaAtual() {
+  const filtros = obterFiltrosAtuais();
   const resultados = filtrarAtividades(filtros);
-  renderizarResultados(resultados, filtros);
+  renderizarResultados(resultados, filtros, true);
+}
+
+formBusca.addEventListener("submit", (event) => {
+  event.preventDefault();
+  serieRapidaSelecionada = serieAnoEl.value || "";
+  atualizarBotoesSerieAtivos();
+  executarBuscaAtual();
+});
+
+serieAnoEl.addEventListener("change", () => {
+  serieRapidaSelecionada = serieAnoEl.value || "";
+  atualizarBotoesSerieAtivos();
 });
 
 btnLimpar.addEventListener("click", () => {
   formBusca.reset();
-  renderizarResultados(atividadesCache);
+  serieRapidaSelecionada = "";
+  atualizarBotoesSerieAtivos();
+
+  renderizarResultados(
+    atividadesCache,
+    {
+      disciplinaId: "",
+      serieAnoId: "",
+      palavraChave: ""
+    },
+    true
+  );
 });
 
-btnAtualizarBase.addEventListener("click", carregarBase);
+btnAtualizarBase.addEventListener("click", async () => {
+  await carregarBase();
+});
 
 carregarBase();
 

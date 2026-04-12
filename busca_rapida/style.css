@@ -18,6 +18,11 @@
   --danger-soft: #fef2f2;
   --danger-border: #fecaca;
   --danger-text: #991b1b;
+  --series-bg: #ecfdf5;
+  --series-border: #a7f3d0;
+  --series-text: #065f46;
+  --series-active-bg: #16a34a;
+  --series-active-text: #ffffff;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   --radius: 18px;
 }
@@ -125,7 +130,8 @@ body {
 .btn-voltar,
 .btn-primario,
 .btn-secundario,
-.btn-acao {
+.btn-acao,
+.btn-serie {
   border: none;
   cursor: pointer;
   text-decoration: none;
@@ -148,20 +154,25 @@ body {
 .btn-voltar:hover,
 .btn-primario:hover,
 .btn-secundario:hover,
-.btn-acao:hover {
+.btn-acao:hover,
+.btn-serie:hover {
   transform: translateY(-1px);
 }
 
-.alerta-box {
+.alerta-box,
+.series-box {
   display: flex;
   align-items: flex-start;
   gap: 14px;
   margin-bottom: 22px;
-  background: var(--warning-soft);
-  border: 1px solid var(--warning-border);
   border-radius: 18px;
   padding: 18px 20px;
   box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+}
+
+.alerta-box {
+  background: var(--warning-soft);
+  border: 1px solid var(--warning-border);
 }
 
 .alerta-icone {
@@ -176,9 +187,13 @@ body {
   flex-shrink: 0;
 }
 
-.alerta-box h3 {
+.alerta-box h3,
+.series-box h3 {
   margin: 0 0 6px;
   font-size: 18px;
+}
+
+.alerta-box h3 {
   color: #9a3412;
 }
 
@@ -187,6 +202,45 @@ body {
   color: #7c2d12;
   line-height: 1.6;
   font-size: 14px;
+}
+
+.series-box {
+  display: block;
+  background: #ffffff;
+  border: 1px solid var(--border);
+}
+
+.series-header p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.series-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-serie {
+  min-height: 52px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--series-bg);
+  color: var(--series-text);
+  border: 1px solid var(--series-border);
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(6, 95, 70, 0.05);
+}
+
+.btn-serie.ativo {
+  background: var(--series-active-bg);
+  color: var(--series-active-text);
+  border-color: var(--series-active-bg);
+  box-shadow: 0 8px 18px rgba(22, 163, 74, 0.22);
 }
 
 .filtros-card,
@@ -381,7 +435,7 @@ body {
 
 .resultados-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 18px;
 }
 
@@ -528,6 +582,10 @@ body {
 
   .btn-acao {
     width: 100%;
+  }
+
+  .series-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 

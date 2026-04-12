@@ -13,8 +13,8 @@
         <div class="hero-tag">Sistema educacional • Atendimento emergencial</div>
         <h1>Busca Rápida</h1>
         <p>
-          Encontre rapidamente uma atividade pronta para impressão em situações
-          urgentes, como turmas sem professor.
+          Localize rapidamente uma atividade pronta para impressão em situações
+          urgentes, como turmas sem professor, sem abrir mão do filtro por série/ano.
         </p>
       </div>
     </section>
@@ -22,7 +22,9 @@
     <div class="topbar">
       <div>
         <h2>Localização rápida de atividades</h2>
-        <p>Escolha os filtros abaixo e encontre uma atividade em poucos segundos.</p>
+        <p>
+          Escolha a série/ano primeiro e refine a busca apenas se necessário.
+        </p>
       </div>
 
       <a class="btn-voltar" href="../index.html">
@@ -37,16 +39,34 @@
         <h3>Uso pensado para momentos de urgência</h3>
         <p>
           Esta tela foi planejada para o pedagogo agir rapidamente quando houver
-          necessidade de localizar, abrir e imprimir uma atividade para a turma.
+          necessidade de localizar, abrir e imprimir uma atividade adequada ao nível
+          da turma.
         </p>
+      </div>
+    </section>
+
+    <section class="series-box">
+      <div class="series-header">
+        <div>
+          <h3>1. Escolha rapidamente a série/ano</h3>
+          <p>
+            Este é o filtro principal da busca rápida. Ao clicar em uma série, a busca é aplicada imediatamente.
+          </p>
+        </div>
+      </div>
+
+      <div id="botoesSeries" class="series-grid">
+        <button type="button" class="btn-serie" data-id="">Todas as séries</button>
       </div>
     </section>
 
     <section class="filtros-card">
       <div class="filtros-header">
         <div>
-          <h3>Filtros de busca</h3>
-          <p>Use apenas o necessário para localizar a atividade com agilidade.</p>
+          <h3>2. Refine a busca, se necessário</h3>
+          <p>
+            Disciplina e palavra-chave são opcionais e servem para afunilar ainda mais os resultados.
+          </p>
         </div>
 
         <div class="filtros-acoes-topo">
@@ -130,5 +150,4 @@
   <script src="./app.js"></script>
 </body>
 </html>
-
 
