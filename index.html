@@ -5,311 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Atividades Escolares</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg: #f4f6fb;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --primary: #2563eb;
-      --primary-soft: #eff6ff;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      --radius: 18px;
-
-      --quick: #16a34a;
-      --quick-soft: #f0fdf4;
-      --quick-border: #86efac;
-      --quick-text: #166534;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background:
-        radial-gradient(circle at top left, #eef4ff 0%, transparent 35%),
-        radial-gradient(circle at bottom right, #f4f0ff 0%, transparent 30%),
-        var(--bg);
-      color: var(--text);
-    }
-
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 40px 20px 60px;
-    }
-
-    .hero {
-      background: linear-gradient(135deg, #1d4ed8, #2563eb 55%, #3b82f6);
-      color: #fff;
-      border-radius: 24px;
-      padding: 34px 30px;
-      box-shadow: var(--shadow);
-      margin-bottom: 28px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      right: -40px;
-      top: -40px;
-      width: 180px;
-      height: 180px;
-      background: rgba(255, 255, 255, 0.12);
-      border-radius: 50%;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      right: 80px;
-      bottom: -55px;
-      width: 150px;
-      height: 150px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 50%;
-    }
-
-    .hero-conteudo {
-      position: relative;
-      z-index: 1;
-      max-width: 760px;
-    }
-
-    .hero-tag {
-      display: inline-block;
-      margin-bottom: 12px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.16);
-      font-size: 13px;
-      font-weight: bold;
-      letter-spacing: 0.3px;
-    }
-
-    .hero h1 {
-      margin: 0 0 12px;
-      font-size: 36px;
-      line-height: 1.1;
-    }
-
-    .hero p {
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.65;
-      color: rgba(255, 255, 255, 0.92);
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .topbar h2 {
-      margin: 0;
-      font-size: 24px;
-      color: #111827;
-    }
-
-    .topbar p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .btn-voltar {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      color: #fff;
-      background: #111827;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-weight: bold;
-      transition: 0.2s;
-      box-shadow: 0 6px 18px rgba(17, 24, 39, 0.18);
-    }
-
-    .btn-voltar:hover {
-      transform: translateY(-1px);
-      opacity: 0.96;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px;
-    }
-
-    .card-link {
-      text-decoration: none;
-      color: inherit;
-      display: block;
-      height: 100%;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px 20px;
-      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
-      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-      min-height: 210px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.10);
-      border-color: #c7d2fe;
-    }
-
-    .card-rapido {
-      border: 2px solid var(--quick-border);
-      background: linear-gradient(135deg, #f0fdf4, #ffffff);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card-rapido::after {
-      content: "PRIORIDADE";
-      position: absolute;
-      top: 14px;
-      right: -30px;
-      transform: rotate(35deg);
-      background: var(--quick);
-      color: #fff;
-      font-size: 10px;
-      font-weight: bold;
-      letter-spacing: 0.8px;
-      padding: 6px 36px;
-      box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
-    }
-
-    .card-rapido:hover {
-      border-color: #22c55e;
-      box-shadow: 0 16px 34px rgba(22, 163, 74, 0.14);
-    }
-
-    .icone {
-      width: 58px;
-      height: 58px;
-      border-radius: 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      margin-bottom: 18px;
-      background: var(--primary-soft);
-    }
-
-    .icone-rapido {
-      background: #dcfce7;
-      color: var(--quick-text);
-    }
-
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 20px;
-      color: #111827;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .card-rapido p {
-      color: #166534;
-    }
-
-    .card-footer {
-      margin-top: 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--primary);
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .card-rapido .card-footer {
-      color: var(--quick-text);
-    }
-
-    .seta {
-      font-size: 18px;
-    }
-
-    .info-box {
-      margin-top: 28px;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
-    }
-
-    .info-box h3 {
-      margin: 0 0 10px;
-      font-size: 18px;
-      color: #111827;
-    }
-
-    .info-box p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 20px 14px 40px;
-      }
-
-      .hero {
-        padding: 26px 20px;
-        border-radius: 18px;
-      }
-
-      .hero h1 {
-        font-size: 28px;
-      }
-
-      .topbar h2 {
-        font-size: 22px;
-      }
-
-      .btn-voltar {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .card {
-        min-height: auto;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
   <div class="container">
+
+    <!-- 🔥 STATUS DE ACESSO -->
+    <div id="infoUsuario" class="info-usuario"></div>
+
     <section class="hero">
       <div class="hero-conteudo">
         <div class="hero-tag">Sistema educacional • Módulo principal</div>
@@ -328,24 +32,21 @@
       </div>
 
       <a class="btn-voltar" href="https://rubo.com.br">
-        <span>⬅</span>
-        <span>Voltar ao menu principal</span>
+        ⬅ Voltar ao portal
       </a>
     </div>
 
     <section class="grid">
+
       <a class="card-link" href="./busca_rapida/index.html">
         <article class="card card-rapido">
           <div>
             <div class="icone icone-rapido">⚡</div>
             <h3>Busca Rápida</h3>
-            <p>
-              Encontre rapidamente uma atividade pronta para impressão, com foco em
-              agilidade para atendimento de turmas sem professor.
-            </p>
+            <p>Encontre rapidamente uma atividade pronta para impressão.</p>
           </div>
           <div class="card-footer">
-            <span>Buscar atividade agora</span>
+            <span>Buscar atividade</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -353,16 +54,11 @@
 
       <a class="card-link" href="./disciplinas/index.html">
         <article class="card">
-          <div>
-            <div class="icone">📚</div>
-            <h3>Disciplinas</h3>
-            <p>
-              Cadastro das disciplinas utilizadas no sistema, como Matemática,
-              Português, Ciências e outras áreas curriculares.
-            </p>
-          </div>
+          <div class="icone">📚</div>
+          <h3>Disciplinas</h3>
+          <p>Cadastro das disciplinas.</p>
           <div class="card-footer">
-            <span>Acessar cadastro</span>
+            <span>Acessar</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -370,16 +66,11 @@
 
       <a class="card-link" href="./series_anos/index.html">
         <article class="card">
-          <div>
-            <div class="icone">🏫</div>
-            <h3>Séries / Anos</h3>
-            <p>
-              Cadastro das séries e anos escolares, contemplando desde as séries iniciais
-              até os anos do ensino médio.
-            </p>
-          </div>
+          <div class="icone">🏫</div>
+          <h3>Séries / Anos</h3>
+          <p>Cadastro das séries.</p>
           <div class="card-footer">
-            <span>Acessar cadastro</span>
+            <span>Acessar</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -387,16 +78,11 @@
 
       <a class="card-link" href="./turmas/index.html">
         <article class="card">
-          <div>
-            <div class="icone">👥</div>
-            <h3>Turmas</h3>
-            <p>
-              Cadastro das turmas vinculadas às respectivas séries/anos,
-              permitindo a organização das aplicações em sala.
-            </p>
-          </div>
+          <div class="icone">👥</div>
+          <h3>Turmas</h3>
+          <p>Cadastro das turmas.</p>
           <div class="card-footer">
-            <span>Acessar cadastro</span>
+            <span>Acessar</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -404,16 +90,11 @@
 
       <a class="card-link" href="./atividades/index.html">
         <article class="card">
-          <div>
-            <div class="icone">📄</div>
-            <h3>Atividades</h3>
-            <p>
-              Cadastro das atividades pedagógicas com associação entre disciplina,
-              série/ano e arquivo PDF para impressão e uso em sala.
-            </p>
-          </div>
+          <div class="icone">📄</div>
+          <h3>Atividades</h3>
+          <p>Cadastro das atividades em PDF.</p>
           <div class="card-footer">
-            <span>Acessar cadastro</span>
+            <span>Acessar</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -421,31 +102,23 @@
 
       <a class="card-link" href="./utilizacoes/index.html">
         <article class="card">
-          <div>
-            <div class="icone">📝</div>
-            <h3>Utilizações</h3>
-            <p>
-              Registro do uso das atividades em sala de aula, permitindo controle
-              histórico de aplicação por turma e data.
-            </p>
-          </div>
+          <div class="icone">📝</div>
+          <h3>Utilizações</h3>
+          <p>Registro de uso das atividades.</p>
           <div class="card-footer">
-            <span>Acessar cadastro</span>
+            <span>Acessar</span>
             <span class="seta">→</span>
           </div>
         </article>
       </a>
+
     </section>
 
-    <section class="info-box">
-      <h3>Observação</h3>
-      <p>
-        Este módulo foi organizado de forma separada por cadastro e rotina para facilitar
-        manutenção, aprendizado, evolução do sistema e reaproveitamento da estrutura
-        nos próximos projetos.
-      </p>
-    </section>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+
 </body>
 </html>
 

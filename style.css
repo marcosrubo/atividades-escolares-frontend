@@ -1,0 +1,77 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6fb;
+  color: #1f2937;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.hero {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  margin: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.btn-voltar {
+  background: #111827;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.card-rapido {
+  border: 2px solid #22c55e;
+}
+
+.icone {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.card-footer {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.info-usuario {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
