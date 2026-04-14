@@ -8,11 +8,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <div class="container">
 
-    <!-- 🔥 STATUS DE ACESSO -->
-    <div id="infoUsuario" class="info-usuario"></div>
+    <div id="infoUsuario" class="status-acesso status-neutro">
+      Verificando forma de acesso...
+    </div>
 
     <section class="hero">
       <div class="hero-conteudo">
@@ -32,21 +32,24 @@
       </div>
 
       <a class="btn-voltar" href="https://rubo.com.br">
-        ⬅ Voltar ao portal
+        <span>⬅</span>
+        <span>Voltar ao portal</span>
       </a>
     </div>
 
     <section class="grid">
-
       <a class="card-link" href="./busca_rapida/index.html">
         <article class="card card-rapido">
           <div>
             <div class="icone icone-rapido">⚡</div>
             <h3>Busca Rápida</h3>
-            <p>Encontre rapidamente uma atividade pronta para impressão.</p>
+            <p>
+              Encontre rapidamente uma atividade pronta para impressão, com foco em
+              agilidade para atendimento de turmas sem professor.
+            </p>
           </div>
           <div class="card-footer">
-            <span>Buscar atividade</span>
+            <span>Buscar atividade agora</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -54,11 +57,16 @@
 
       <a class="card-link" href="./disciplinas/index.html">
         <article class="card">
-          <div class="icone">📚</div>
-          <h3>Disciplinas</h3>
-          <p>Cadastro das disciplinas.</p>
+          <div>
+            <div class="icone">📚</div>
+            <h3>Disciplinas</h3>
+            <p>
+              Cadastro das disciplinas utilizadas no sistema, como Matemática,
+              Português, Ciências e outras áreas curriculares.
+            </p>
+          </div>
           <div class="card-footer">
-            <span>Acessar</span>
+            <span>Acessar cadastro</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -66,11 +74,16 @@
 
       <a class="card-link" href="./series_anos/index.html">
         <article class="card">
-          <div class="icone">🏫</div>
-          <h3>Séries / Anos</h3>
-          <p>Cadastro das séries.</p>
+          <div>
+            <div class="icone">🏫</div>
+            <h3>Séries / Anos</h3>
+            <p>
+              Cadastro das séries e anos escolares, contemplando desde as séries iniciais
+              até os anos do ensino médio.
+            </p>
+          </div>
           <div class="card-footer">
-            <span>Acessar</span>
+            <span>Acessar cadastro</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -78,11 +91,16 @@
 
       <a class="card-link" href="./turmas/index.html">
         <article class="card">
-          <div class="icone">👥</div>
-          <h3>Turmas</h3>
-          <p>Cadastro das turmas.</p>
+          <div>
+            <div class="icone">👥</div>
+            <h3>Turmas</h3>
+            <p>
+              Cadastro das turmas vinculadas às respectivas séries/anos,
+              permitindo a organização das aplicações em sala.
+            </p>
+          </div>
           <div class="card-footer">
-            <span>Acessar</span>
+            <span>Acessar cadastro</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -90,11 +108,16 @@
 
       <a class="card-link" href="./atividades/index.html">
         <article class="card">
-          <div class="icone">📄</div>
-          <h3>Atividades</h3>
-          <p>Cadastro das atividades em PDF.</p>
+          <div>
+            <div class="icone">📄</div>
+            <h3>Atividades</h3>
+            <p>
+              Cadastro das atividades pedagógicas com associação entre disciplina,
+              série/ano e arquivo PDF para impressão e uso em sala.
+            </p>
+          </div>
           <div class="card-footer">
-            <span>Acessar</span>
+            <span>Acessar cadastro</span>
             <span class="seta">→</span>
           </div>
         </article>
@@ -102,23 +125,34 @@
 
       <a class="card-link" href="./utilizacoes/index.html">
         <article class="card">
-          <div class="icone">📝</div>
-          <h3>Utilizações</h3>
-          <p>Registro de uso das atividades.</p>
+          <div>
+            <div class="icone">📝</div>
+            <h3>Utilizações</h3>
+            <p>
+              Registro do uso das atividades em sala de aula, permitindo controle
+              histórico de aplicação por turma e data.
+            </p>
+          </div>
           <div class="card-footer">
-            <span>Acessar</span>
+            <span>Acessar cadastro</span>
             <span class="seta">→</span>
           </div>
         </article>
       </a>
-
     </section>
 
+    <section class="info-box">
+      <h3>Observação</h3>
+      <p>
+        Este módulo foi organizado de forma separada por cadastro e rotina para facilitar
+        manutenção, aprendizado, evolução do sistema e reaproveitamento da estrutura
+        nos próximos projetos.
+      </p>
+    </section>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
-
 </body>
 </html>
 

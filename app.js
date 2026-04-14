@@ -5,28 +5,57 @@ const supabaseClient = createClient(
   "sb_publishable_BU6qFD5MDhuUvybtf-ehkw_--JRKqTY"
 );
 
-async function verificarAcesso() {
+function definirStatus(classe, html) {
   const div = document.getElementById("infoUsuario");
+  if (!div) return;
 
-  const { data } = await supabaseClient.auth.getSession();
+  div.className = `status-acesso ${classe}`;
+  div.innerHTML = html;
+}
 
-  const session = data?.session;
+async function verificarAcesso() {
+  try {
+    const { data, error } = await supabaseClient.auth.getSession();
 
-  if (session?.user) {
-    const nome =
-      session.user.user_metadata?.nome ||
-      session.user.email.split("@")[0];
+    if (error) {
+      console.error("Erro ao verificar sessão:", error);
+    }
 
-    div.innerHTML = `👤 Logado como <strong>${nome}</strong>`;
-    return;
-  }
+    const session = data?.session;
 
-  const veioDoPortal = document.referrer.includes("rubo.com.br");
+    if (session?.user) {
+      const user = session.user;
+      const nome =
+        user.user_metadata?.nome ||
+        (user.email ? user.email.split("@")[0] : "Usuário");
 
-  if (veioDoPortal) {
-    div.innerHTML = `⚠️ Acesso via Portal (sem login)`;
-  } else {
-    div.innerHTML = `🌐 Acesso direto`;
+      definirStatus(
+        "status-logado",
+        `👤 <strong>Logado como:</strong> ${nome}`
+      );
+      return;
+    }
+
+    const referrer = document.referrer || "";
+    const veioDoPortal = referrer.includes("rubo.com.br");
+
+    if (veioDoPortal) {
+      definirStatus(
+        "status-portal",
+        "⚠️ <strong>Acesso via Portal RUBO</strong>, mas sem login ativo."
+      );
+    } else {
+      definirStatus(
+        "status-direto",
+        "🌐 <strong>Acesso direto pelo link</strong>, sem passar pelo Portal RUBO."
+      );
+    }
+  } catch (error) {
+    console.error("Erro inesperado ao verificar acesso:", error);
+    definirStatus(
+      "status-neutro",
+      "ℹ️ Não foi possível identificar a forma de acesso."
+    );
   }
 }
 
